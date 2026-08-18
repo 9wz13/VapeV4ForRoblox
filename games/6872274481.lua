@@ -2132,7 +2132,7 @@ run(function()
 		end
 
 		if LegitAura.Enabled then
-			if (tick() - bedwars.SwordController.lastSwing) > 0.299 then return false end
+			if (tick() - bedwars.SwordController.lastSwing) > 0.29 then return false end
 		end
 
 		return sword, meta
@@ -2204,7 +2204,7 @@ run(function()
 					end)
 				end
 
-				local swingCooldown = 0.299
+				local swingCooldown = 0.29
 	
 				repeat
 					local attacked, sword, meta = {}, getAttackData()
