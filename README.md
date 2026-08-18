@@ -11,8 +11,7 @@
   Rise up to the top while remaining completely untouchable.
 </h2>
 
-## Contacts
-[Discord](https://discord.gg/GtmVtMc6) - MY DISCORD
+
 <br/>
 [Youtube](https://youtube.com/c/7GrandDadVape) - XYLEX YOUTUBE
 
@@ -20,7 +19,7 @@
 1. Download the specific scripting utility of your choice.
 2. Execute the provided loadstring below.
 ```luau
-loadstring(game:HttpGet("https://raw.githubusercontent.com/qyroke2/VapeV4ForRoblox/main/NewMainScript.lua", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/9wz13/VapeV4ForRoblox/main/NewMainScript.lua", true))()
 ```
 
 ## Possible Issues
