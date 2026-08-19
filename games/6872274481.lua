@@ -2273,8 +2273,8 @@ run(function()
 										-- Safe Killaura helpers: throttles/smooths attacks to avoid server ratelimit
 								AttackRemote:FireServer({
 											weapon = sword.tool,
-											chargedAttack = {chargeRatio = 1200},
-											lastSwingServerTimeDelta = 12000,
+											chargedAttack = {chargeRatio = 3},
+											lastSwingServerTimeDelta = 3,
 											entityInstance = v.Character,
 											validate = {
 												raycast = {
