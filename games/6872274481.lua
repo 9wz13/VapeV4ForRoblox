@@ -2271,126 +2271,24 @@ run(function()
 
 					
 										-- Safe Killaura helpers: throttles/smooths attacks to avoid server ratelimit
-	AttackRemote:FireServer[
-    local killaura = {
-        perTargetCooldown = 0.5,    -- seconds between hits to the same entity
-        ratelimitThreshold = 25,    -- hits in window that trigger backoff
-        ratelimitWindow = 60,       -- seconds window to count hits
-        ratelimitCooldown = 60,     -- seconds to pause if threshold reached
-        minJitter = -0.03,          -- adds small random jitter to swing timing
-        maxJitter = 0.03
-    }
-
-    local tokens = 0
-    local capacity = 8             -- default CPS; overridden dynamically by CPS slider
-    local lastRefill = tick()
-    local targetLastHit = setmetatable({}, {__mode = "k"}) -- weak keys (entities/instances)
-    local hitTimestamps = {}
-    local ratelimitUntil = 0
-
-    -- safe get CPS from slider object (works for two-value or single-value sliders)
-    local function getCpsFromSlider(slider)
-        if not slider then return capacity end
-        if type(slider.GetRandomValue) == "function" then
-            return slider:GetRandomValue()
-        end
-        return slider.Value or capacity
-    end
-
-    local function refill(slider)
-        local now = tick()
-        local dt = now - lastRefill
-        if dt <= 0 then return end
-        capacity = getCpsFromSlider(slider) or capacity
-        tokens = math.min(capacity, tokens + dt * capacity)
-        lastRefill = now
-    end
-
-    local function consume(slider)
-        refill(slider)
-        if tokens >= 1 then
-            tokens = tokens - 1
-            return true
-        end
-        return false
-    end
-
-    local function recordHit()
-        local now = tick()
-        table.insert(hitTimestamps, now)
-        while hitTimestamps[1] and hitTimestamps[1] < now - cfg.ratelimitWindow do
-            table.remove(hitTimestamps, 1)
-        end
-        if #hitTimestamps >= cfg.ratelimitThreshold then
-            ratelimitUntil = now + cfg.ratelimitCooldown
-        end
-    end
-
-    local function canHitEntity(ent)
-        if not ent then return false end
-        local t = targetLastHit[ent]
-        return (not t) or t <= tick()
-    end
-
-    local function markHit(ent)
-        targetLastHit[ent] = tick() + cfg.perTargetCooldown
-    end
-
-    local function jitter()
-        return cfg.minJitter + (math.random() * (cfg.maxJitter - cfg.minJitter))
-    end
-
-    -- safeAttack(ent, cpsSlider) -> true if an attack was issued
-    function safeAttack(ent, cpsSlider)
-        if not ent then return false end
-
-        if ratelimitUntil > tick() then
-            return false
-        end
-
-        if not canHitEntity(ent) then
-            return false
-        end
-
-        if not consume(cpsSlider) then
-            return false
-        end
-
-        local ok = pcall(function()
-            if bedwars and bedwars.SwordController and bedwars.SwordController.swingSwordAtMouse then
-                local base = 0.39
-                bedwars.SwordController:swingSwordAtMouse(base + jitter())
-            else
-                -- fallback attempt (non-ideal): call sendServerRequest if present
-                if bedwars and bedwars.SwordController and bedwars.SwordController.sendServerRequest then
-                    bedwars.SwordController:sendServerRequest()
-                end
-            end
-        end)
-
-        if not ok then
-            return false
-        end
-
-        markHit(ent)
-        recordHit()
-        return true
-    end
-
-    -- cleanup loop: trims stale per-target data and timestamps
-    task.spawn(function()
-        while true do
-            local now = tick()
-            for ent, t in pairs(targetLastHit) do
-                if t < now then targetLastHit[ent] = nil end
-            end
-            while hitTimestamps[1] and hitTimestamps[1] < now - cfg.ratelimitWindow do
-                table.remove(hitTimestamps, 1)
-            end
-            task.wait(5) ]
-        end
-    end)
-end
+								AttackRemote:FireServer({
+											weapon = sword.tool,
+											chargedAttack = {chargeRatio = 0.5},
+											lastSwingServerTimeDelta = 0.5,
+											entityInstance = v.Character,
+											validate = {
+												raycast = {
+													cameraPosition = {value = pos},
+													cursorDirection = {value = dir}
+												},
+												targetPosition = {value = actualRoot.Position},
+												selfPosition = {value = pos}
+											}
+										})
+									end
+								end
+							end
+						end
 
 					for i, v in Boxes do
 						v.Adornee = attacked[i] and attacked[i].Entity.RootPart or nil
