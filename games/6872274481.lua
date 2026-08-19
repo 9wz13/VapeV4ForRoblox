@@ -2271,7 +2271,7 @@ run(function()
 
 									AttackRemote:FireServer({
 										-- Safe Killaura helpers: throttles/smooths attacks to avoid server ratelimit
-do
+
     local cfg = {
         perTargetCooldown = 0.5,    -- seconds between hits to the same entity
         ratelimitThreshold = 25,    -- hits in window that trigger backoff
