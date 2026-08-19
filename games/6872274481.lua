@@ -2269,9 +2269,9 @@ run(function()
 										AnimDelay = tick()
 									end
 
-									AttackRemote:FireServer({
+					
 										-- Safe Killaura helpers: throttles/smooths attacks to avoid server ratelimit
-
+	AttackRemote:FireServer[
     local killaura = {
         perTargetCooldown = 0.5,    -- seconds between hits to the same entity
         ratelimitThreshold = 25,    -- hits in window that trigger backoff
@@ -2387,7 +2387,7 @@ run(function()
             while hitTimestamps[1] and hitTimestamps[1] < now - cfg.ratelimitWindow do
                 table.remove(hitTimestamps, 1)
             end
-            task.wait(5)
+            task.wait(5) ]
         end
     end)
 end
